@@ -1,0 +1,108 @@
+---
+title: "Informe"
+format:
+  html:
+    code-fold: true
+author:
+  - name: Israel Huentecura
+    orcid: 0000-0003-1689-0557
+    email: Israel.Huentecura@mayor.cl
+jupyter: python3
+---
+
+# Introducción
+
+Este informe está destinado al grupo de Ciencias Planetarias de la Universidad X. El objetivo es presentar un análisis claro y conciso de los descubrimientos de exoplanetas a lo largo del tiempo, centrándose en las técnicas de descubrimiento más comunes y las relaciones entre varias características planetarias.
+
+# Importar las librerias necesarias.
+
+- Primero, se importa la biblioteca pandas con el alias pd. Pandas es una biblioteca de Python que proporciona estructuras de datos y herramientas de análisis de datos de alto rendimiento y fáciles de usar. Es especialmente bueno para trabajar con datos tabulares (como datos en hojas de cálculo de Excel o bases de datos SQL).
+
+- Luego, se importa la biblioteca numpy con el alias np. Numpy es una biblioteca de Python para trabajar con arrays. Proporciona funciones matemáticas que son capaces de realizar cálculos en arrays completos de datos sin la necesidad de loops en Python.
+
+- Después, se importa la biblioteca matplotlib.pyplot con el alias plt. Matplotlib es una biblioteca de Python para la creación de gráficos estáticos, animados e interactivos en Python. pyplot es una colección de funciones que hacen que matplotlib funcione como MATLAB, lo cual es útil para los científicos de datos que están acostumbrados a trabajar con MATLAB.
+
+- Finalmente, se importa la biblioteca seaborn con el alias sns. Seaborn es una biblioteca de visualización de datos de Python basada en matplotlib. Proporciona una interfaz de alto nivel para dibujar gráficos estadísticos atractivos e informativos.
+
+```{python}
+#| label: Importaciones
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+# Cargamos los datos y selección de variables
+Primero, se utiliza la función pd.read_csv() de la biblioteca pandas para cargar los datos desde un archivo CSV. El argumento './data/PS_2024.04.02_11.16.01.csv' es la ruta al archivo CSV que se desea cargar. El argumento low_memory=False se utiliza para asegurar que pandas lea más eficientemente los datos cuando se tienen columnas con diferentes tipos de datos.
+
+Después, se crea una lista llamada col_list que contiene los nombres de las columnas que se desean mantener en el DataFrame. Estas columnas son 'pl_name', 'discoverymethod', 'disc_year','pl_orbper','soltype', 'pl_rade','pl_masse' y 'st_mass'. Estos podrían ser, por ejemplo, el nombre del planeta, el método de descubrimiento, el año de descubrimiento, el periodo orbital, el tipo de sol, el radio del planeta, la masa del planeta y la masa de la estrella, respectivamente.
+
+Finalmente, se seleccionan solo las columnas de interés del DataFrame original df utilizando la lista col_list y se sobrescribe el DataFrame original con este nuevo DataFrame que contiene solo las columnas de interés.
+
+```{python}
+#| label: Carga de datos
+
+df = pd.read_csv('./data/PS_2024.04.02_11.16.01.csv', low_memory=False)
+# Dejar solo planeta confirmados, metodo deteccion, nombre planeta, periodo orbital, año de descubrimiento, masa y radio del planeta tierra
+col_list = ['pl_name', 'discoverymethod', 'disc_year','pl_orbper','soltype', 'pl_rade','pl_masse','st_mass']
+df = df[col_list]
+```
+
+# Vamos a gráficar la para observar el los métodos más usados, ver @fig-methods.
+
+```{python}
+#| label: fig-methods
+#| fig-cap: "Cantidad de planetas descubiertos por cada método"
+
+# Dejar planetas confirmados unicos
+df_filter = df.drop_duplicates(subset=['pl_name'])
+# Drop filas con valores nulos
+df_filter = df_filter.dropna()
+# Dropear columna pl_name
+df_filter = df_filter.drop(columns=['pl_name'])
+# Hacer histograma de años disc_year vs metodos de descubrimiento discoverymethod
+sns.histplot(data=df_filter, x='disc_year', hue='discoverymethod', multiple='stack')
+
+```
+
+# Cuales son las 3 tecnicas de descubrimiento mas comunes, ver @fig-count.
+
+```{python}
+#| label: fig-count
+#| fig-cap: "Caption, nose que poner por el momento"
+
+df['discoverymethod'].value_counts().head(3)
+# Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes
+sns.countplot(data=df, y='discoverymethod', order=df['discoverymethod'].value_counts().index[:3])
+
+```
+
+# Correlación gráfico, ver @fig-correlation.
+
+```{python}
+#| label: fig-correlation
+#| fig-cap: "Caption, nose que poner por el momento"
+#| 
+
+# Existe una relacion entre la masa del planeta y el radio del planeta?
+# Incluir incertezas de cada valor
+# Hacer un scatter plot con los valores de masa y radio
+plt.figure()
+sns.scatterplot(data=df, x='pl_masse', y='pl_rade')
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('Masa del planeta (Masa de la Tierra)')
+plt.ylabel('Radio del planeta (Radio de la Tierra)')
+plt.show()
+
+```
+
+# Correlación coeficiente
+
+```{python}
+# Calcular la correlacion entre masa y radio
+correlation = df['pl_masse'].corr(df['pl_rade'])
+print(correlation)
+
+```

@@ -8,7 +8,7 @@
 
 <meta name="author" content="Israel Huentecura">
 
-<title>Informe</title>
+<title>Informe Exoplanetas</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -72,15 +72,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#informe-de-análisis-de-exoplanetas" id="toc-informe-de-análisis-de-exoplanetas" class="nav-link active" data-scroll-target="#informe-de-análisis-de-exoplanetas"><span class="header-section-number">1</span> Informe de Análisis de Exoplanetas</a></li>
+  <li><a href="#importar-las-librerias-necesarias." id="toc-importar-las-librerias-necesarias." class="nav-link" data-scroll-target="#importar-las-librerias-necesarias."><span class="header-section-number">2</span> Importar las librerias necesarias.</a></li>
+  <li><a href="#cargamos-los-datos-y-selección-de-variables" id="toc-cargamos-los-datos-y-selección-de-variables" class="nav-link" data-scroll-target="#cargamos-los-datos-y-selección-de-variables"><span class="header-section-number">3</span> Cargamos los datos y selección de variables</a></li>
+  <li><a href="#configurar-estilo" id="toc-configurar-estilo" class="nav-link" data-scroll-target="#configurar-estilo"><span class="header-section-number">4</span> Configurar estilo</a></li>
+  <li><a href="#vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." id="toc-vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="nav-link" data-scroll-target="#vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods."><span class="header-section-number">5</span> Vamos a gráficar la para observar el los métodos más usados, ver Figure&nbsp;1.</a></li>
+  <li><a href="#las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count." id="toc-las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count." class="nav-link" data-scroll-target="#las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count."><span class="header-section-number">6</span> Las 3 tecnicas de descubrimiento mas comunes, ver Figure&nbsp;2.</a>
+  <ul class="collapse">
+  <li><a href="#método-de-tránsito" id="toc-método-de-tránsito" class="nav-link" data-scroll-target="#método-de-tránsito"><span class="header-section-number">6.1</span> Método de Tránsito:</a></li>
+  <li><a href="#velocidad-radial-o-método-doppler" id="toc-velocidad-radial-o-método-doppler" class="nav-link" data-scroll-target="#velocidad-radial-o-método-doppler"><span class="header-section-number">6.2</span> Velocidad Radial o Método Doppler:</a></li>
+  <li><a href="#imagen-directa" id="toc-imagen-directa" class="nav-link" data-scroll-target="#imagen-directa"><span class="header-section-number">6.3</span> Imagen Directa:</a></li>
+  </ul></li>
+  <li><a href="#correlación-gráfico-ver-fig-correlation." id="toc-correlación-gráfico-ver-fig-correlation." class="nav-link" data-scroll-target="#correlación-gráfico-ver-fig-correlation."><span class="header-section-number">7</span> Correlación gráfico, ver Figure&nbsp;3.</a>
+  <ul class="collapse">
+  <li><a href="#coeficiente-correlación-de-pearson" id="toc-coeficiente-correlación-de-pearson" class="nav-link" data-scroll-target="#coeficiente-correlación-de-pearson"><span class="header-section-number">7.1</span> Coeficiente Correlación de Pearson</a></li>
+  </ul></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">8</span> Conclusión</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Informe</h1>
+<h1 class="title">Informe Exoplanetas</h1>
 </div>
 
 
@@ -90,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Israel Huentecura <a href="mailto:Israel.Huentecura@mayor.cl" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0003-1689-0557" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+             <p>Israel Huentecura <a href="mailto:Israel.Huentecura@mayor.cl" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
           </div>
   </div>
     
@@ -103,16 +126,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introducción" class="level1">
-<h1>Introducción</h1>
-<p>Este informe está destinado al grupo de Ciencias Planetarias de la Universidad X. El objetivo es presentar un análisis claro y conciso de los descubrimientos de exoplanetas a lo largo del tiempo, centrándose en las técnicas de descubrimiento más comunes y las relaciones entre varias características planetarias.</p>
-</section>
-<section id="importar-las-librerias-necesarias." class="level1">
-<h1>Importar las librerias necesarias.</h1>
+<section id="informe-de-análisis-de-exoplanetas" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Informe de Análisis de Exoplanetas</h1>
 <ul>
-<li><p>Primero, se importa la biblioteca pandas con el alias pd. Pandas es una biblioteca de Python que proporciona estructuras de datos y herramientas de análisis de datos de alto rendimiento y fáciles de usar. Es especialmente bueno para trabajar con datos tabulares (como datos en hojas de cálculo de Excel o bases de datos SQL).</p></li>
-<li><p>Luego, se importa la biblioteca numpy con el alias np. Numpy es una biblioteca de Python para trabajar con arrays. Proporciona funciones matemáticas que son capaces de realizar cálculos en arrays completos de datos sin la necesidad de loops en Python.</p></li>
-<li><p>Después, se importa la biblioteca matplotlib.pyplot con el alias plt. Matplotlib es una biblioteca de Python para la creación de gráficos estáticos, animados e interactivos en Python. pyplot es una colección de funciones que hacen que matplotlib funcione como MATLAB, lo cual es útil para los científicos de datos que están acostumbrados a trabajar con MATLAB.</p></li>
+<li><p><strong>[a]</strong> <strong>Audiencia</strong> Este informe está destinado a mis compañeros de la Universidad X, específicamente aquellos que están en el grupo de Ciencias Planetarias. Como estudiantes incipientes de ciencias planetarias, tienen un conocimiento básico de la astronomía y un interés en el descubrimiento de exoplanetas.</p></li>
+<li><p><strong>[b]</strong> <strong>Mensaje</strong> El mensaje principal que quiero transmitir es una comprensión clara y concisa de los descubrimientos de exoplanetas a lo largo del tiempo, con un enfoque en las técnicas de descubrimiento más comunes y las relaciones entre varias características planetarias.</p></li>
+<li><p><strong>[c]</strong> <strong>Presentación de la Información</strong> Para mostrar la información, he optado por utilizar gráficos de barras y de histograma. Estos gráficos son efectivos para mostrar distribuciones de datos y comparaciones entre categorías. Por ejemplo, un gráfico de barras es útil para comparar la cantidad de exoplanetas descubiertos por cada método, mientras que un histograma es útil para visualizar la distribución de los años de descubrimiento.</p></li>
+<li><p><strong>[d]</strong> <strong>Diseño de Visualizaciones</strong> Las visualizaciones se han diseñado de manera estratégica para captar la atención y transmitir información de manera eficaz. He utilizado títulos descriptivos y claros, leyendas para explicar qué representa cada color en los gráficos, y anotaciones para destacar puntos de interés. Además, he eliminado cualquier distracción innecesaria, como la cuadrícula de fondo, para que los datos sean el foco principal.</p></li>
+</ul>
+</section>
+<section id="importar-las-librerias-necesarias." class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Importar las librerias necesarias.</h1>
+<ul>
+<li><p>Primero importamos pandas para estructuras de datos y herramientas de análisis de datos de alto rendimiento. Es especialmente bueno para trabajar con datos tabulares (como datos en hojas de cálculo de Excel o bases de datos SQL).</p></li>
+<li><p>Luego, se importa la biblioteca numpy con el alias np Proporciona funciones matemáticas que son capaces de realizar cálculos en arrays completos de datos sin la necesidad de loops.</p></li>
+<li><p>Después, se importa Matplotlib, una biblioteca para la creación de gráficos.</p></li>
 <li><p>Finalmente, se importa la biblioteca seaborn con el alias sns. Seaborn es una biblioteca de visualización de datos de Python basada en matplotlib. Proporciona una interfaz de alto nivel para dibujar gráficos estadísticos atractivos e informativos.</p></li>
 </ul>
 <div id="importaciones" class="cell" data-execution_count="1">
@@ -125,40 +153,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </section>
-<section id="cargamos-los-datos-y-selección-de-variables" class="level1">
-<h1>Cargamos los datos y selección de variables</h1>
+<section id="cargamos-los-datos-y-selección-de-variables" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Cargamos los datos y selección de variables</h1>
 <p>Primero, se utiliza la función pd.read_csv() de la biblioteca pandas para cargar los datos desde un archivo CSV. El argumento ‘./data/PS_2024.04.02_11.16.01.csv’ es la ruta al archivo CSV que se desea cargar. El argumento low_memory=False se utiliza para asegurar que pandas lea más eficientemente los datos cuando se tienen columnas con diferentes tipos de datos.</p>
 <p>Después, se crea una lista llamada col_list que contiene los nombres de las columnas que se desean mantener en el DataFrame. Estas columnas son ‘pl_name’, ‘discoverymethod’, ‘disc_year’,‘pl_orbper’,‘soltype’, ‘pl_rade’,‘pl_masse’ y ‘st_mass’. Estos podrían ser, por ejemplo, el nombre del planeta, el método de descubrimiento, el año de descubrimiento, el periodo orbital, el tipo de sol, el radio del planeta, la masa del planeta y la masa de la estrella, respectivamente.</p>
 <p>Finalmente, se seleccionan solo las columnas de interés del DataFrame original df utilizando la lista col_list y se sobrescribe el DataFrame original con este nuevo DataFrame que contiene solo las columnas de interés.</p>
 <div id="carga-de-datos" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'./data/PS_2024.04.02_11.16.01.csv'</span>, low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'./data/PS_2024.04.02_11.16.01.csv'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Dejar solo planeta confirmados, metodo deteccion, nombre planeta, periodo orbital, año de descubrimiento, masa y radio del planeta tierra</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>col_list <span class="op">=</span> [<span class="st">'pl_name'</span>, <span class="st">'discoverymethod'</span>, <span class="st">'disc_year'</span>,<span class="st">'pl_orbper'</span>,<span class="st">'soltype'</span>, <span class="st">'pl_rade'</span>,<span class="st">'pl_masse'</span>,<span class="st">'st_mass'</span>]</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[col_list]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[col_list]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Traducir nombres de columnas</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> [<span class="st">'Nombre'</span>, <span class="st">'Metodo de descubrimiento'</span>, <span class="st">'Año'</span>, <span class="st">'Periodo Orbital'</span>, <span class="st">'Tipo Estrella'</span>, <span class="st">'Radio Planeta'</span>, <span class="st">'Masa Planeta'</span>, <span class="st">'Masa Estrella'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\ihuentecura\AppData\Local\Temp\ipykernel_8312\1785086627.py:1: DtypeWarning: Columns (4,5) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv('./data/PS_2024.04.02_11.16.01.csv')</code></pre>
+</div>
+</div>
+</section>
+<section id="configurar-estilo" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Configurar estilo</h1>
+<p>Principal enfoque de encontrar una estetica limpia eliminando cualquier distracción innecesaria.</p>
+<div id="a229de09" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear mi estilo de graficos</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Quitar eje superior y derecho</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(style<span class="op">=</span><span class="st">'white'</span>, rc<span class="op">=</span>{<span class="st">'axes.spines.right'</span>: <span class="va">False</span>, <span class="st">'axes.spines.top'</span>: <span class="va">False</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="level1">
-<h1>Vamos a gráficar la para observar el los métodos más usados, ver <a href="#fig-methods" class="quarto-xref">Figure&nbsp;1</a>.</h1>
-<div id="cell-fig-methods" class="cell" data-execution_count="3">
+<section id="vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Vamos a gráficar la para observar el los métodos más usados, ver <a href="#fig-methods" class="quarto-xref">Figure&nbsp;1</a>.</h1>
+<div id="cell-fig-methods" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dejar planetas confirmados unicos</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df.drop_duplicates(subset<span class="op">=</span>[<span class="st">'pl_name'</span>])</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop filas con valores nulos</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.dropna()</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Dropear columna pl_name</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.drop(columns<span class="op">=</span>[<span class="st">'pl_name'</span>])</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer histograma de años disc_year vs metodos de descubrimiento discoverymethod</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>df_filter, x<span class="op">=</span><span class="st">'disc_year'</span>, hue<span class="op">=</span><span class="st">'discoverymethod'</span>, multiple<span class="op">=</span><span class="st">'stack'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dejar planetas confirmados unicos</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df.drop_duplicates(subset<span class="op">=</span>[<span class="st">'Nombre'</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop filas con valores nulos</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.dropna()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Dropear columna pl_name</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.drop(columns<span class="op">=</span>[<span class="st">'Nombre'</span>])</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer histograma de años disc_year vs metodos de descubrimiento discoverymethod</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>df_filter, x<span class="op">=</span><span class="st">'Año'</span>, hue<span class="op">=</span><span class="st">'Metodo de descubrimiento'</span>, multiple<span class="op">=</span><span class="st">'stack'</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Traducir al español</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Año de descubrimiento'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cantidad de planetas'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de planetas descubiertos por año'</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-methods" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-methods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-methods-output-1.png" width="598" height="429" class="figure-img">
+<img src="Informe_files/figure-html/fig-methods-output-1.png" width="602" height="455" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-methods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Cantidad de planetas descubiertos por cada método
@@ -168,72 +220,99 @@ Figure&nbsp;1: Cantidad de planetas descubiertos por cada método
 </div>
 </div>
 </section>
-<section id="cuales-son-las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count." class="level1">
-<h1>Cuales son las 3 tecnicas de descubrimiento mas comunes, ver <a href="#fig-count" class="quarto-xref">Figure&nbsp;2</a>.</h1>
-<div id="cell-fig-count" class="cell" data-execution_count="4">
+<section id="las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count." class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Las 3 tecnicas de descubrimiento mas comunes, ver <a href="#fig-count" class="quarto-xref">Figure&nbsp;2</a>.</h1>
+<p>En esta sección a traves de un conteo de los planetas decubiertos y con la herramienta de un gráfico de barra podemos observar lo siguiente</p>
+<div id="cell-fig-count" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'discoverymethod'</span>].value_counts().head(<span class="dv">3</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sns.countplot(data<span class="op">=</span>df, y<span class="op">=</span><span class="st">'discoverymethod'</span>, order<span class="op">=</span>df[<span class="st">'discoverymethod'</span>].value_counts().index[:<span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuales son las 3 tecnicas de descubrimiento mas comunes</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>comunes_3 <span class="op">=</span> df_filter[<span class="st">'Metodo de descubrimiento'</span>].value_counts().head(<span class="dv">3</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes, en el eje x tiene que estar desde el  0 hasta el 80</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Cantidad de planetas'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de planetas descubiertos por método'</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>sns.countplot(data<span class="op">=</span>df_filter, y<span class="op">=</span><span class="st">'Metodo de descubrimiento'</span>, order<span class="op">=</span>comunes_3.index, color<span class="op">=</span><span class="st">'violet'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-count" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-count-output-1.png" width="665" height="429" class="figure-img">
+<img src="Informe_files/figure-html/fig-count-output-1.png" width="669" height="455" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Caption, nose que poner por el momento
+Figure&nbsp;2: 3 principales métodos de descubrimiento
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
+<section id="método-de-tránsito" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="método-de-tránsito"><span class="header-section-number">6.1</span> Método de Tránsito:</h2>
+<p>Este método se basa en la observación de la disminución de la luz de una estrella cuando un planeta pasa frente a ella, es decir, cuando el planeta “transita” la estrella. La cantidad de luz que se bloquea nos da una indicación del tamaño del planeta. Además, el tiempo que tarda el planeta en pasar frente a la estrella nos puede dar información sobre su órbita.</p>
+<p><strong>A partir de los datos sabemos que este es ampliamente el método por el cual más planetas se han descubierto</strong></p>
 </section>
-<section id="correlación-gráfico-ver-fig-correlation." class="level1">
-<h1>Correlación gráfico, ver <a href="#fig-correlation" class="quarto-xref">Figure&nbsp;3</a>.</h1>
-<div id="cell-fig-correlation" class="cell" data-execution_count="5">
+<section id="velocidad-radial-o-método-doppler" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="velocidad-radial-o-método-doppler"><span class="header-section-number">6.2</span> Velocidad Radial o Método Doppler:</h2>
+<p>Este método se basa en la detección de pequeños cambios en la velocidad de una estrella causados por la gravedad de un planeta en órbita. Cuando un planeta orbita una estrella, la gravedad del planeta tira de la estrella, causando un pequeño “tambaleo” en su movimiento. Este tambaleo puede detectarse como un cambio en la longitud de onda de la luz de la estrella (un efecto conocido como desplazamiento Doppler). Los cambios en la velocidad radial pueden indicar la presencia de un planeta.</p>
+</section>
+<section id="imagen-directa" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="imagen-directa"><span class="header-section-number">6.3</span> Imagen Directa:</h2>
+<p>Este método implica la captura de imágenes directas de los exoplanetas. Es el método más desafiante porque las estrellas son mucho más brillantes que los planetas que las orbitan, lo que hace que los planetas sean difíciles de ver. Las técnicas para este método incluyen el uso de coronógrafos para bloquear la luz de la estrella y revelar los planetas, y técnicas de procesamiento de imágenes para eliminar la luz de las estrellas.</p>
+</section>
+</section>
+<section id="correlación-gráfico-ver-fig-correlation." class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Correlación gráfico, ver <a href="#fig-correlation" class="quarto-xref">Figure&nbsp;3</a>.</h1>
+<p>Al enfrentar la masa del planeta vs el radio del planeta podemos observar el siguiente gráfico:</p>
+<div id="cell-fig-correlation" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Existe una relacion entre la masa del planeta y el radio del planeta?</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluir incertezas de cada valor</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer un scatter plot con los valores de masa y radio</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'pl_masse'</span>, y<span class="op">=</span><span class="st">'pl_rade'</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Masa del planeta (Masa de la Tierra)'</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Radio del planeta (Radio de la Tierra)'</span>)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Existe una relacion entre la masa del planeta y el radio del planeta?</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluir incertezas de cada valor</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer un scatter plot con los valores de masa y radio</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Masa del planeta (Masa de la Tierra)'</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Radio del planeta (Radio de la Tierra)'</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'Masa Planeta'</span>, y<span class="op">=</span><span class="st">'Radio Planeta'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-correlation" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-correlation-output-1.png" width="591" height="435" class="figure-img">
+<img src="Informe_files/figure-html/fig-correlation-output-1.png" width="595" height="448" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Caption, nose que poner por el momento
+Figure&nbsp;3: Masa de cada planeta vs Radio de cada planeta
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="correlación-coeficiente" class="level1">
-<h1>Correlación coeficiente</h1>
-<div id="e748a454" class="cell" data-execution_count="6">
+<p>Al ver el gráfico observamos una sutil relación lineal entre estas variables, es necesario usar una medida para cuantificar esta relación</p>
+<section id="coeficiente-correlación-de-pearson" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="coeficiente-correlación-de-pearson"><span class="header-section-number">7.1</span> Coeficiente Correlación de Pearson</h2>
+<p>Calculamos cual es la relación lineal de esta variables enfrentadas</p>
+<div id="0baf245a" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la correlacion entre masa y radio</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>correlation <span class="op">=</span> df[<span class="st">'pl_masse'</span>].corr(df[<span class="st">'pl_rade'</span>])</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(correlation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la correlacion entre masa y radio</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>correlation <span class="op">=</span> df[<span class="st">'Masa Planeta'</span>].corr(df[<span class="st">'Radio Planeta'</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(correlation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.3071838760716857</code></pre>
 </div>
 </div>
+<p>Este coeficiente nos dice que si hay una dependencia lineal entre estas variables y esa relación es positiva (proporcional) pero su magnitud no es tan significante.</p>
+</section>
+</section>
+<section id="conclusión" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Conclusión</h1>
+<p>Este estudio sobre exoplanetas nos lleva a una intersección fascinante entre la tecnología observacional avanzada y una comprensión cada vez más profunda de la diversidad planetaria en nuestra galaxia. La predominancia del método de tránsito en el descubrimiento de exoplanetas resalta su eficacia para detectar cuerpos celestes distantes. Esto se logra mediante la observación precisa de la atenuación de la luz estelar durante el tránsito planetario. Esta técnica, en combinación con la velocidad radial y la imagen directa, ha desencadenado una era de descubrimientos que nos desafía a repensar nuestras concepciones sobre los planetas.</p>
+<p>Aunque la correlación entre la masa y el radio de los exoplanetas es moderada y no excepcionalmente significativa, sugiere que las propiedades físicas de estos mundos distantes están influenciadas por complejos procesos de formación y evolución. Este hallazgo plantea preguntas fascinantes sobre la diversidad de composiciones planetarias, los mecanismos de acreción y la dinámica atmosférica en sistemas estelares más allá del nuestro.</p>
+<p>En última instancia, este estudio no solo profundiza nuestra apreciación de la vasta variedad de exoplanetas que pueblan la galaxia, sino que también abre nuevas vías de investigación. Estas investigaciones buscan comprender los mecanismos fundamentales que dan forma a estos mundos remotos, enriqueciendo así nuestra visión del cosmos y nuestro lugar dentro de él.</p>
 </section>
 
 </main>

@@ -74,7 +74,7 @@ sns.set_theme(style='white')
 sns.set(style='white', rc={'axes.spines.right': False, 'axes.spines.top': False})
 ```
 
-# Vamos a gráficar la para observar el los métodos más usados, ver @fig-methods.
+# Vamos a gráficar para observar el los métodos más usados, ver @fig-methods.
 
 ```{python}
 #| label: fig-methods
@@ -82,8 +82,6 @@ sns.set(style='white', rc={'axes.spines.right': False, 'axes.spines.top': False}
 
 # Dejar planetas confirmados unicos
 df_filter = df.drop_duplicates(subset=['Nombre'])
-# Drop filas con valores nulos
-df_filter = df_filter.dropna()
 # Dropear columna pl_name
 df_filter = df_filter.drop(columns=['Nombre'])
 # Hacer histograma de años disc_year vs metodos de descubrimiento discoverymethod
@@ -102,14 +100,21 @@ plt.show()
 ```{python}
 #| label: fig-count
 #| fig-cap: "3 principales métodos de descubrimiento"
-
+#| 
 # Cuales son las 3 tecnicas de descubrimiento mas comunes
 comunes_3 = df_filter['Metodo de descubrimiento'].value_counts().head(3)
-# Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes, en el eje x tiene que estar desde el  0 hasta el 80
 
-plt.xlabel('Cantidad de planetas')
-plt.title('Cantidad de planetas descubiertos por método')
-sns.countplot(data=df_filter, y='Metodo de descubrimiento', order=comunes_3.index, color='violet')
+# Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes, en el eje x tiene que estar desde el 0 hasta el 80
+plt.figure()
+ax = sns.countplot(data=df_filter, y='Metodo de descubrimiento', order=comunes_3.index, palette='Set3')
+
+# Agregar números en las barras anteponiendo #
+for p in ax.patches:
+  ax.annotate(f"#{p.get_width()}", (p.get_width(), p.get_y()+p.get_height()/2), ha='left', va='center')
+
+plt.xlabel('')
+# Quitar ticks del eje x
+plt.xticks([])
 
 ```
 

@@ -84,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#importar-las-librerias-necesarias." id="toc-importar-las-librerias-necesarias." class="nav-link" data-scroll-target="#importar-las-librerias-necesarias."><span class="header-section-number">2</span> Importar las librerias necesarias.</a></li>
   <li><a href="#cargamos-los-datos-y-selección-de-variables" id="toc-cargamos-los-datos-y-selección-de-variables" class="nav-link" data-scroll-target="#cargamos-los-datos-y-selección-de-variables"><span class="header-section-number">3</span> Cargamos los datos y selección de variables</a></li>
   <li><a href="#configurar-estilo" id="toc-configurar-estilo" class="nav-link" data-scroll-target="#configurar-estilo"><span class="header-section-number">4</span> Configurar estilo</a></li>
-  <li><a href="#vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." id="toc-vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="nav-link" data-scroll-target="#vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods."><span class="header-section-number">5</span> Vamos a gráficar la para observar el los métodos más usados, ver Figure&nbsp;1.</a></li>
+  <li><a href="#vamos-a-gráficar-para-observar-el-los-métodos-más-usados-ver-fig-methods." id="toc-vamos-a-gráficar-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="nav-link" data-scroll-target="#vamos-a-gráficar-para-observar-el-los-métodos-más-usados-ver-fig-methods."><span class="header-section-number">5</span> Vamos a gráficar para observar el los métodos más usados, ver Figure&nbsp;1.</a></li>
   <li><a href="#las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count." id="toc-las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count." class="nav-link" data-scroll-target="#las-3-tecnicas-de-descubrimiento-mas-comunes-ver-fig-count."><span class="header-section-number">6</span> Las 3 tecnicas de descubrimiento mas comunes, ver Figure&nbsp;2.</a>
   <ul class="collapse">
   <li><a href="#método-de-tránsito" id="toc-método-de-tránsito" class="nav-link" data-scroll-target="#método-de-tránsito"><span class="header-section-number">6.1</span> Método de Tránsito:</a></li>
@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> [<span class="st">'Nombre'</span>, <span class="st">'Metodo de descubrimiento'</span>, <span class="st">'Año'</span>, <span class="st">'Periodo Orbital'</span>, <span class="st">'Tipo Estrella'</span>, <span class="st">'Radio Planeta'</span>, <span class="st">'Masa Planeta'</span>, <span class="st">'Masa Estrella'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\ihuentecura\AppData\Local\Temp\ipykernel_8312\1785086627.py:1: DtypeWarning: Columns (4,5) have mixed types. Specify dtype option on import or set low_memory=False.
+<pre><code>C:\Users\israe\AppData\Local\Temp\ipykernel_12012\1785086627.py:1: DtypeWarning: Columns (4,5) have mixed types. Specify dtype option on import or set low_memory=False.
   df = pd.read_csv('./data/PS_2024.04.02_11.16.01.csv')</code></pre>
 </div>
 </div>
@@ -177,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="configurar-estilo" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Configurar estilo</h1>
 <p>Principal enfoque de encontrar una estetica limpia eliminando cualquier distracción innecesaria.</p>
-<div id="a229de09" class="cell" data-execution_count="3">
+<div id="903e0b9b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear mi estilo de graficos</span></span>
@@ -187,30 +187,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </section>
-<section id="vamos-a-gráficar-la-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Vamos a gráficar la para observar el los métodos más usados, ver <a href="#fig-methods" class="quarto-xref">Figure&nbsp;1</a>.</h1>
+<section id="vamos-a-gráficar-para-observar-el-los-métodos-más-usados-ver-fig-methods." class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Vamos a gráficar para observar el los métodos más usados, ver <a href="#fig-methods" class="quarto-xref">Figure&nbsp;1</a>.</h1>
 <div id="cell-fig-methods" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dejar planetas confirmados unicos</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df.drop_duplicates(subset<span class="op">=</span>[<span class="st">'Nombre'</span>])</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop filas con valores nulos</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.dropna()</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Dropear columna pl_name</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.drop(columns<span class="op">=</span>[<span class="st">'Nombre'</span>])</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer histograma de años disc_year vs metodos de descubrimiento discoverymethod</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>df_filter, x<span class="op">=</span><span class="st">'Año'</span>, hue<span class="op">=</span><span class="st">'Metodo de descubrimiento'</span>, multiple<span class="op">=</span><span class="st">'stack'</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Traducir al español</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Año de descubrimiento'</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cantidad de planetas'</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de planetas descubiertos por año'</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Dropear columna pl_name</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df_filter <span class="op">=</span> df_filter.drop(columns<span class="op">=</span>[<span class="st">'Nombre'</span>])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer histograma de años disc_year vs metodos de descubrimiento discoverymethod</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>df_filter, x<span class="op">=</span><span class="st">'Año'</span>, hue<span class="op">=</span><span class="st">'Metodo de descubrimiento'</span>, multiple<span class="op">=</span><span class="st">'stack'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Traducir al español</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Año de descubrimiento'</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cantidad de planetas'</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de planetas descubiertos por año'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-methods" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-methods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-methods-output-1.png" width="602" height="455" class="figure-img">
+<img src="Informe_files/figure-html/fig-methods-output-1.png" width="613" height="455" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-methods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Cantidad de planetas descubiertos por cada método
@@ -228,17 +226,31 @@ Figure&nbsp;1: Cantidad de planetas descubiertos por cada método
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuales son las 3 tecnicas de descubrimiento mas comunes</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>comunes_3 <span class="op">=</span> df_filter[<span class="st">'Metodo de descubrimiento'</span>].value_counts().head(<span class="dv">3</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes, en el eje x tiene que estar desde el  0 hasta el 80</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Cantidad de planetas'</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de planetas descubiertos por método'</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>sns.countplot(data<span class="op">=</span>df_filter, y<span class="op">=</span><span class="st">'Metodo de descubrimiento'</span>, order<span class="op">=</span>comunes_3.index, color<span class="op">=</span><span class="st">'violet'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de barras de las 3 tecnicas de descubrimiento mas comunes, en el eje x tiene que estar desde el 0 hasta el 80</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.countplot(data<span class="op">=</span>df_filter, y<span class="op">=</span><span class="st">'Metodo de descubrimiento'</span>, order<span class="op">=</span>comunes_3.index, palette<span class="op">=</span><span class="st">'Set3'</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregar números en las barras anteponiendo #</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> ax.patches:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  ax.annotate(<span class="ss">f"#</span><span class="sc">{</span>p<span class="sc">.</span>get_width()<span class="sc">}</span><span class="ss">"</span>, (p.get_width(), p.get_y()<span class="op">+</span>p.get_height()<span class="op">/</span><span class="dv">2</span>), ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">''</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Quitar ticks del eje x</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.xticks([])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\israe\AppData\Local\Temp\ipykernel_12012\3785271280.py:6: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
+
+  ax = sns.countplot(data=df_filter, y='Metodo de descubrimiento', order=comunes_3.index, palette='Set3')</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div id="fig-count" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-count-output-1.png" width="669" height="455" class="figure-img">
+<img src="Informe_files/figure-html/fig-count-output-2.png" width="702" height="389" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: 3 principales métodos de descubrimiento
@@ -267,15 +279,15 @@ Figure&nbsp;2: 3 principales métodos de descubrimiento
 <div id="cell-fig-correlation" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Existe una relacion entre la masa del planeta y el radio del planeta?</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluir incertezas de cada valor</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer un scatter plot con los valores de masa y radio</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Masa del planeta (Masa de la Tierra)'</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Radio del planeta (Radio de la Tierra)'</span>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'Masa Planeta'</span>, y<span class="op">=</span><span class="st">'Radio Planeta'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Existe una relacion entre la masa del planeta y el radio del planeta?</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluir incertezas de cada valor</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer un scatter plot con los valores de masa y radio</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Masa del planeta (Masa de la Tierra)'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Radio del planeta (Radio de la Tierra)'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'Masa Planeta'</span>, y<span class="op">=</span><span class="st">'Radio Planeta'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-correlation" class="quarto-figure quarto-figure-center quarto-float anchored">
@@ -294,12 +306,12 @@ Figure&nbsp;3: Masa de cada planeta vs Radio de cada planeta
 <section id="coeficiente-correlación-de-pearson" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="coeficiente-correlación-de-pearson"><span class="header-section-number">7.1</span> Coeficiente Correlación de Pearson</h2>
 <p>Calculamos cual es la relación lineal de esta variables enfrentadas</p>
-<div id="0baf245a" class="cell" data-execution_count="7">
+<div id="c1cf3b82" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la correlacion entre masa y radio</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>correlation <span class="op">=</span> df[<span class="st">'Masa Planeta'</span>].corr(df[<span class="st">'Radio Planeta'</span>])</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(correlation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la correlacion entre masa y radio</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>correlation <span class="op">=</span> df[<span class="st">'Masa Planeta'</span>].corr(df[<span class="st">'Radio Planeta'</span>])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(correlation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.3071838760716857</code></pre>

@@ -8,6 +8,7 @@ format:
 author:
   - name: Israel Huentecura
     email: Israel.Huentecura@mayor.cl
+
 jupyter: python3
 ---
 
@@ -43,6 +44,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats
+
 ```
 
 # Cargamos los datos y selección de variables
@@ -78,7 +81,7 @@ sns.set(style='white', rc={'axes.spines.right': False, 'axes.spines.top': False}
 
 ```{python}
 #| label: fig-methods
-#| fig-cap: "Cantidad de planetas descubiertos por cada método"
+#| fig-cap: "Histograma aplilado de los diferentes métodos de descubrimientos"
 
 # Dejar planetas confirmados unicos
 df_filter = df.drop_duplicates(subset=['Nombre'])
@@ -99,7 +102,7 @@ plt.show()
 
 ```{python}
 #| label: fig-count
-#| fig-cap: "3 principales métodos de descubrimiento"
+#| fig-cap: "Barras de cuenta de descubrimientos por método"
 #| 
 # Cuales son las 3 tecnicas de descubrimiento mas comunes
 comunes_3 = df_filter['Metodo de descubrimiento'].value_counts().head(3)
@@ -110,11 +113,15 @@ ax = sns.countplot(data=df_filter, y='Metodo de descubrimiento', order=comunes_3
 
 # Agregar números en las barras anteponiendo #
 for p in ax.patches:
-  ax.annotate(f"#{p.get_width()}", (p.get_width(), p.get_y()+p.get_height()/2), ha='left', va='center')
+  ax.annotate(f" # {int(p.get_width())}", (p.get_width(), p.get_y()+p.get_height()/2), ha='left', va='center')
 
 plt.xlabel('')
+plt.ylabel('')
+plt.title('Cantidad de descubrimientos de planetas de los 3 principales métodos')
 # Quitar ticks del eje x
 plt.xticks([])
+# Quitar axis spine bottom
+ax.spines['bottom'].set_visible(False)
 
 ```
 
@@ -139,31 +146,73 @@ Al enfrentar la masa del planeta vs el radio del planeta podemos observar el sig
 
 ```{python}
 #| label: fig-correlation
-#| fig-cap: "Masa de cada planeta vs Radio de cada planeta"
+#| fig-cap: "Gráfico de dispersión de las variables"
 #| 
-# Existe una relacion entre la masa del planeta y el radio del planeta?
-# Incluir incertezas de cada valor
-# Hacer un scatter plot con los valores de masa y radio
-plt.figure()
-plt.xscale('log')
-plt.yscale('log')
-plt.xlabel('Masa del planeta (Masa de la Tierra)')
-plt.ylabel('Radio del planeta (Radio de la Tierra)')
-sns.scatterplot(data=df, x='Masa Planeta', y='Radio Planeta', alpha=0.5)
-```
-Al ver el gráfico observamos una sutil relación lineal entre estas variables, es necesario usar una medida para cuantificar esta relación
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-## Coeficiente Correlación de Pearson 
-Calculamos cual es la relación lineal de esta variables enfrentadas
+# el contexto del gráfico para mejorar la estética
+sns.set_context("notebook", rc={"lines.linewidth": 2.5})
+
+# Crear la figura y los ejes
+fig, ax = plt.subplots()
+
+# Configurar escala logarítmica para ambos ejes
+ax.set_xscale('log')
+ax.set_yscale('log')
+
+# Etiquetas de los ejes
+ax.set_xlabel('Masa del planeta (Masa de la Tierra)')
+ax.set_ylabel('Radio del planeta (Radio de la Tierra)')
+
+# Título del gráfico
+ax.set_title('Relación entre la Masa y el Radio de los Planetas')
+
+# Crear el scatter plot con incertidumbre en los datos
+sns.scatterplot(data=df, x='Masa Planeta', y='Radio Planeta', alpha=0.5, s=100, edgecolor=None, color = 'purple')
+
+# Mejorar la estética del gráfico
+sns.despine()
+
+# Mostrar el gráfico
+plt.show()
+
+```
+Al ver el gráfico observamos una sutil relación lineal entre estas variables, es necesario usar una medida para cuantificar esta relación.
+
+## Coeficiente de correlación de Pearson y test de hipótesis 
+Calculamos cual es la relación lineal de esta variables enfrentadas y probamos la hipótesis de correlación.
 
 
 ```{python}
-# Calcular la correlacion entre masa y radio
-correlation = df['Masa Planeta'].corr(df['Radio Planeta'])
-print(correlation)
+
+# Limpíar nans
+df = df.dropna(subset=['Masa Planeta', 'Radio Planeta'])
+
+# Extraer las columnas de interés del DataFrame
+masa = df['Masa Planeta']
+radio = df['Radio Planeta']
+
+
+
+# Calcular el coeficiente de correlación de Pearson y el valor p
+coef, p = stats.pearsonr(masa, radio)
+
+
+
+# Interpretar el valor p
+alpha = 0.05  # Nivel de significancia
+if p > alpha:
+    print('No se rechaza la hipótesis nula: no hay correlación.')
+else:
+    print('Se rechaza la hipótesis nula: hay correlación.')
+    
+print(f'Coeficiente de correlación de Pearson: {coef:.3f}')
+print(f' y es una relación positiva debido al signo de este')
 ```
 
-Este coeficiente nos dice que si hay una dependencia lineal entre estas variables y esa relación es positiva (proporcional) pero su magnitud no es tan significante.
+Haciendo el test de hipotesis para saber si hay una correlación este nos dices que se rechaza la hipótesis nula, por lo tanto habria una dependencia lineal entre las variables evaluadas.
+Luego el coeficiente nos dice que si hay una dependencia lineal entre estas variables y esa relación es positiva (proporcional) y tiene un valor de 0.307.
 
 # Conclusión
 

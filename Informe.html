@@ -93,7 +93,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#correlación-gráfico-ver-fig-correlation." id="toc-correlación-gráfico-ver-fig-correlation." class="nav-link" data-scroll-target="#correlación-gráfico-ver-fig-correlation."><span class="header-section-number">7</span> Correlación gráfico, ver Figure&nbsp;3.</a>
   <ul class="collapse">
-  <li><a href="#coeficiente-correlación-de-pearson" id="toc-coeficiente-correlación-de-pearson" class="nav-link" data-scroll-target="#coeficiente-correlación-de-pearson"><span class="header-section-number">7.1</span> Coeficiente Correlación de Pearson</a></li>
+  <li><a href="#coeficiente-de-correlación-de-pearson-y-test-de-hipótesis" id="toc-coeficiente-de-correlación-de-pearson-y-test-de-hipótesis" class="nav-link" data-scroll-target="#coeficiente-de-correlación-de-pearson-y-test-de-hipótesis"><span class="header-section-number">7.1</span> Coeficiente de correlación de Pearson y test de hipótesis</a></li>
   </ul></li>
   <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">8</span> Conclusión</a></li>
   </ul>
@@ -149,7 +149,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -169,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> [<span class="st">'Nombre'</span>, <span class="st">'Metodo de descubrimiento'</span>, <span class="st">'Año'</span>, <span class="st">'Periodo Orbital'</span>, <span class="st">'Tipo Estrella'</span>, <span class="st">'Radio Planeta'</span>, <span class="st">'Masa Planeta'</span>, <span class="st">'Masa Estrella'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\israe\AppData\Local\Temp\ipykernel_12012\1785086627.py:1: DtypeWarning: Columns (4,5) have mixed types. Specify dtype option on import or set low_memory=False.
+<pre><code>C:\Users\ihuentecura\AppData\Local\Temp\ipykernel_3208\1785086627.py:1: DtypeWarning: Columns (4,5) have mixed types. Specify dtype option on import or set low_memory=False.
   df = pd.read_csv('./data/PS_2024.04.02_11.16.01.csv')</code></pre>
 </div>
 </div>
@@ -177,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="configurar-estilo" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Configurar estilo</h1>
 <p>Principal enfoque de encontrar una estetica limpia eliminando cualquier distracción innecesaria.</p>
-<div id="903e0b9b" class="cell" data-execution_count="3">
+<div id="74d98749" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear mi estilo de graficos</span></span>
@@ -211,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <img src="Informe_files/figure-html/fig-methods-output-1.png" width="613" height="455" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-methods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Cantidad de planetas descubiertos por cada método
+Figure&nbsp;1: Histograma aplilado de los diferentes métodos de descubrimientos
 </figcaption>
 </figure>
 </div>
@@ -233,14 +234,18 @@ Figure&nbsp;1: Cantidad de planetas descubiertos por cada método
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregar números en las barras anteponiendo #</span></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> ax.patches:</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  ax.annotate(<span class="ss">f"#</span><span class="sc">{</span>p<span class="sc">.</span>get_width()<span class="sc">}</span><span class="ss">"</span>, (p.get_width(), p.get_y()<span class="op">+</span>p.get_height()<span class="op">/</span><span class="dv">2</span>), ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  ax.annotate(<span class="ss">f" # </span><span class="sc">{</span><span class="bu">int</span>(p.get_width())<span class="sc">}</span><span class="ss">"</span>, (p.get_width(), p.get_y()<span class="op">+</span>p.get_height()<span class="op">/</span><span class="dv">2</span>), ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'center'</span>)</span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">''</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Quitar ticks del eje x</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.xticks([])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">''</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de descubrimientos de planetas de los 3 principales métodos'</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Quitar ticks del eje x</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>plt.xticks([])</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Quitar axis spine bottom</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'bottom'</span>].set_visible(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\israe\AppData\Local\Temp\ipykernel_12012\3785271280.py:6: FutureWarning: 
+<pre><code>C:\Users\ihuentecura\AppData\Local\Temp\ipykernel_3208\2492868209.py:6: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
 
@@ -250,10 +255,10 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <div id="fig-count" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-count-output-2.png" width="702" height="389" class="figure-img">
+<img src="Informe_files/figure-html/fig-count-output-2.png" width="678" height="408" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: 3 principales métodos de descubrimiento
+Figure&nbsp;2: Barras de cuenta de descubrimientos por método
 </figcaption>
 </figure>
 </div>
@@ -279,45 +284,86 @@ Figure&nbsp;2: 3 principales métodos de descubrimiento
 <div id="cell-fig-correlation" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Existe una relacion entre la masa del planeta y el radio del planeta?</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluir incertezas de cada valor</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer un scatter plot con los valores de masa y radio</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">'log'</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Masa del planeta (Masa de la Tierra)'</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Radio del planeta (Radio de la Tierra)'</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'Masa Planeta'</span>, y<span class="op">=</span><span class="st">'Radio Planeta'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># el contexto del gráfico para mejorar la estética</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>sns.set_context(<span class="st">"notebook"</span>, rc<span class="op">=</span>{<span class="st">"lines.linewidth"</span>: <span class="fl">2.5</span>})</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear la figura y los ejes</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Configurar escala logarítmica para ambos ejes</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ax.set_yscale(<span class="st">'log'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Etiquetas de los ejes</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Masa del planeta (Masa de la Tierra)'</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Radio del planeta (Radio de la Tierra)'</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Título del gráfico</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Relación entre la Masa y el Radio de los Planetas'</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear el scatter plot con incertidumbre en los datos</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'Masa Planeta'</span>, y<span class="op">=</span><span class="st">'Radio Planeta'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, s<span class="op">=</span><span class="dv">100</span>, edgecolor<span class="op">=</span><span class="va">None</span>, color <span class="op">=</span> <span class="st">'purple'</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Mejorar la estética del gráfico</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>sns.despine()</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el gráfico</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-correlation" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Informe_files/figure-html/fig-correlation-output-1.png" width="595" height="448" class="figure-img">
+<img src="Informe_files/figure-html/fig-correlation-output-1.png" width="595" height="461" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Masa de cada planeta vs Radio de cada planeta
+Figure&nbsp;3: Gráfico de dispersión de las variables
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Al ver el gráfico observamos una sutil relación lineal entre estas variables, es necesario usar una medida para cuantificar esta relación</p>
-<section id="coeficiente-correlación-de-pearson" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="coeficiente-correlación-de-pearson"><span class="header-section-number">7.1</span> Coeficiente Correlación de Pearson</h2>
-<p>Calculamos cual es la relación lineal de esta variables enfrentadas</p>
-<div id="c1cf3b82" class="cell" data-execution_count="7">
+<p>Al ver el gráfico observamos una sutil relación lineal entre estas variables, es necesario usar una medida para cuantificar esta relación.</p>
+<section id="coeficiente-de-correlación-de-pearson-y-test-de-hipótesis" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="coeficiente-de-correlación-de-pearson-y-test-de-hipótesis"><span class="header-section-number">7.1</span> Coeficiente de correlación de Pearson y test de hipótesis</h2>
+<p>Calculamos cual es la relación lineal de esta variables enfrentadas y probamos la hipótesis de correlación.</p>
+<div id="68002da3" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la correlacion entre masa y radio</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>correlation <span class="op">=</span> df[<span class="st">'Masa Planeta'</span>].corr(df[<span class="st">'Radio Planeta'</span>])</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(correlation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Limpíar nans</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">'Masa Planeta'</span>, <span class="st">'Radio Planeta'</span>])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer las columnas de interés del DataFrame</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>masa <span class="op">=</span> df[<span class="st">'Masa Planeta'</span>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>radio <span class="op">=</span> df[<span class="st">'Radio Planeta'</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el coeficiente de correlación de Pearson y el valor p</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>coef, p <span class="op">=</span> stats.pearsonr(masa, radio)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Interpretar el valor p</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span>  <span class="co"># Nivel de significancia</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> p <span class="op">&gt;</span> alpha:</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'No se rechaza la hipótesis nula: no hay correlación.'</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Se rechaza la hipótesis nula: hay correlación.'</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Coeficiente de correlación de Pearson: </span><span class="sc">{</span>coef<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f' y es una relación positiva debido al signo de este'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.3071838760716857</code></pre>
+<pre><code>Se rechaza la hipótesis nula: hay correlación.
+Coeficiente de correlación de Pearson: 0.307
+ y es una relación positiva debido al signo de este</code></pre>
 </div>
 </div>
-<p>Este coeficiente nos dice que si hay una dependencia lineal entre estas variables y esa relación es positiva (proporcional) pero su magnitud no es tan significante.</p>
+<p>Haciendo el test de hipotesis para saber si hay una correlación este nos dices que se rechaza la hipótesis nula, por lo tanto habria una dependencia lineal entre las variables evaluadas. Luego el coeficiente nos dice que si hay una dependencia lineal entre estas variables y esa relación es positiva (proporcional) y tiene un valor de 0.307.</p>
 </section>
 </section>
 <section id="conclusión" class="level1" data-number="8">

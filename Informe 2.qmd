@@ -1,0 +1,318 @@
+---
+title: "Exploración de datos del COVID-19"
+format:
+  html:
+    code-fold: true
+    number-sections: true
+    toc: true
+author:
+  - name: Israel Huentecura
+    email: Israel.Huentecura@mayor.cl
+jupyter: python3
+---
+
+# Informe de Análisis de COVID-19
+
+- **[a]** **Audiencia**
+Este informe está destinado a mis compañeros de la empresa X, que buscan nuevas oportunidades de negocios con planes basados en los datos que vamos a explorar
+
+- **[b]** **Mensaje**
+El mensaje principal que quiero transmitir es una comprensión clara y concisa de la propagación y el impacto de COVID-19 a lo largo del tiempo, con un enfoque en la distribución geográfica de los casos y las muertes, y la relación entre el número de casos, las vacunas.
+
+- **[c]** **Presentación de la Información**
+Para mostrar la información, he optado por utilizar gráficos de barras y mapas coropléticos. Estos gráficos son efectivos para mostrar distribuciones de datos, comparaciones entre categorías y distribuciones geográficas. Por ejemplo, un gráfico de barras es útil para comparar la cantidad de casos en diferentes países, mientras que un mapa coroplético es útil para visualizar la distribución geográfica de los casos.
+
+- **[d]** **Diseño de Visualizaciones**
+Las visualizaciones se han diseñado de manera estratégica para captar la atención y transmitir información de manera eficaz. He utilizado títulos descriptivos y claros, leyendas para explicar qué representa cada color en los gráficos, y anotaciones para destacar puntos de interés. Además, he eliminado cualquier distracción innecesaria, como la cuadrícula de fondo, para que los datos sean el foco principal.
+Se utilizó una paleta de colores que sea amigable con personas daltónicas
+
+# Resumen
+
+Este informe presenta un análisis exhaustivo de los datos de COVID-19 proporcionados por el Center for Systems Science and Engineering (CSSE) en Johns Hopkins University. Los datos incluyen casos confirmados, muertes, vacunaciones, pruebas y datos demográficos de todo el mundo durante tres años, desde el primer informe de la pandemia.
+
+# Introducción
+
+La pandemia de COVID-19 ha afectado a todo el mundo de formas sin precedentes. Este informe busca entender mejor la propagación y el impacto del virus utilizando los datos proporcionados por el CSSE. La empresa X está interesada en utilizar estos datos para prepararse mejor para futuras pandemias y responder a varias preguntas clave.
+
+# Metodología
+
+Los datos se analizan utilizando varias técnicas de análisis de datos y visualización con python. Se presta especial atención a la evolución de los casos a lo largo del tiempo, la distribución geográfica de los casos y las muertes, y la relación entre el número de casos y las vacunas.
+
+# Preparación de entorno virtual para trabajar
+
+Vamos a importar las librerias necesarias para nuestra investigación.
+```{python}
+import pandas as pd
+import plotly.express as px
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+```
+Luego hacemos el pre-procesamiento para tener los datos lo más limpios y posible. ver @fig-df
+```{python}
+#| label: fig-df
+#| fig-cap: "Dataframe con los datos"
+
+df = pd.read_csv(r'data\covid\time_series_covid19_confirmed_global.csv')
+
+# Eliminar las filas con NaN en 'Lat' y 'Long'
+df = df.dropna(subset=['Lat', 'Long'])
+
+# O reemplazar NaN con un valor específico, por ejemplo, 0
+df = df.fillna(value={'Lat': 0, 'Long': 0})
+
+# Reemplazar los caracteres de barra en los nombres de las columnas
+df.columns = df.columns.str.replace('/', '-')
+df
+```
+
+
+# Resultados
+
+**a) Distribución global de los casos reportados desde el primer día:** Los datos muestran que el COVID-19 se ha propagado a casi todos los países del mundo desde que se informó por primera vez. Una animación de la distribución global de los casos de COVID-19 desde el primer día hasta ahora, con un intervalo de tiempo de un mes, proporcionaría una visualización clara de cómo ha evolucionado la pandemia. Ver @fig-coropleth
+
+```{python}
+#| label: fig-coropleth
+#| fig-cap: "Mapa coroplético de calor con el evolutivo de contagios"
+#| 
+# Preparar los datos para la animación
+df_melt = df.melt(id_vars=['Province-State', 'Country-Region', 'Lat', 'Long'], var_name='Date', value_name='Cases')
+df_melt['Date'] = pd.to_datetime(df_melt['Date'])
+
+# Agrupar los datos por mes
+df_melt['YearMonth'] = df_melt['Date'].dt.to_period('M')
+# Agrupar los datos por mes y sumar solo la columna 'Cases'
+df_grouped = df_melt.groupby(['YearMonth', 'Country-Region'])['Cases'].sum().reset_index()
+
+# Crear la animación
+fig = px.choropleth(df_grouped, 
+                    locations='Country-Region', 
+                    locationmode='country names',
+                    color='Cases', 
+                    hover_name='Country-Region', 
+                    animation_frame=df_grouped['YearMonth'].astype(str),
+                    # Paleta de color rojo y azul
+                    color_continuous_scale=px.colors.sequential.Burg,
+                    projection='natural earth')
+# Título de la animación
+fig.update_layout(title_text='COVID-19: Casos confirmados por país')
+# Poner en español cases
+fig.update_coloraxes(colorbar_title='Casos')
+fig.show()
+
+
+
+```
+
+**b) Los tres países con el mayor número de contagios en 2020:** Según los datos disponibles, los tres países con el mayor número de casos confirmados de COVID-19 en 2020 fueron Estados Unidos, India y Brasil. Para ponderar estos números con la población de cada país, necesitamos los datos de población de 2020. Según la base de datos de la población mundial, las poblaciones en 2020 para estos países fueron:
+
+1. **Estados Unidos**: 331,449,281 personas
+2. **India**: 1,396,387,127 personas
+3. **Brasil**: 213,196,303 personas
+
+Ahora, podemos calcular el número de casos por cada 1,000 habitantes para estos países. Ver @fig-barra-infección
+
+```{python}
+#| label: fig-barra-infección
+#| fig-cap: "Gráfico de barra con la tasa de infección"
+#| 
+df_grouped
+# Sumar los del año 2020 por pais, de enero a diciembre
+df_grouped_2020 = df_grouped[df_grouped['YearMonth'].dt.year == 2020].groupby('Country-Region')['Cases'].sum().reset_index()
+# Cada cantidad se divide en 12 meses para obtener el promedio de casos por mes
+df_grouped_2020['Cases'] = df_grouped_2020['Cases'] / 12
+# Ordenar los datos por número de casos
+df_grouped_2020 = df_grouped_2020.sort_values('Cases', ascending=False)
+# Top 3 países con más casos
+top3_df = df_grouped_2020.head(3)
+# 'Population': [331449281, 1396387127, 213196303]  
+top3_df['Population'] = [331449281, 1396387127, 213196303]
+# Calcular la tasa de infección poblaional promediado en 12 meses
+top3_df = top3_df.assign(InfectionRate = top3_df['Cases'] / top3_df['Population'])
+# Gráfico de barras
+fig = px.bar(top3_df, x='Country-Region', y='InfectionRate', text='InfectionRate', title='Top 3 países con más casos de COVID-19 en 2020')
+fig.update_traces(texttemplate='%{text:.2%}', textposition='outside')
+# Leyenda
+fig.update_layout(yaxis_tickformat='%')
+# Hacerlo un tanto más largo
+fig.update_layout(height=500)
+# Quitar grid fondo
+fig.update_layout(plot_bgcolor='white')
+# Poner en español axes
+fig.update_xaxes(title_text='País')
+fig.update_yaxes(title_text='Tasa de infección %')
+# Quitar eje y
+fig.update_yaxes(showticklabels=False)
+# Mostrar la gráfica
+fig.show()
+
+
+
+```
+
+
+
+**c) Evolución de las muertes en los tres países con el mayor número de casos:** La evolución de las muertes en estos tres países ha variado. Según los datos disponibles, todos estos países han experimentado un aumento en el número de muertes a lo largo del tiempo. Observar la figura @fig-series-tiempo
+
+```{python}
+#| label: fig-series-tiempo
+#| fig-cap: "Serie de tiempo de las muertes en función del tiempo "
+
+
+# De estos tres países, Del top3 encontrado, ¿c´omo evolucion´o en los siguientes a˜nos en las muertes?
+df_deaths_global = pd.read_csv(r'data\covid\time_series_covid19_deaths_global.csv')
+# Graficar la evolución de las muertes en los tres países con más casos
+top3_deaths = df_deaths_global.loc[df_deaths_global['Country/Region'].isin(top3_df['Country-Region'])]
+top3_deaths = top3_deaths.groupby('Country/Region').sum().T
+# Borrar las 3 primeras filas
+top3_deaths = top3_deaths.iloc[3:]
+# Pasar el índice a datetime
+top3_deaths.index = pd.to_datetime(top3_deaths.index)
+# Graficar
+top3_deaths.plot(figsize=(10, 6), title='Evolución de las muertes en los tres países con más casos')
+# Agregar una linea vertical en la fecha de inicio de la vacunación
+plt.axvline(pd.to_datetime('2021-01-01'), color='r', linestyle='--')
+# Poner que significa la linea vertical
+plt.text(pd.to_datetime('2021-01-01'), 200000, '      Inicio de la vacunación', rotation=0, color='r')
+# Poner en español axes
+plt.xlabel('Fecha')
+plt.ylabel('Muertes')
+# Quitar linea de arriba y derecha
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+# Mostrar la gráfica
+plt.show()
+```
+
+
+
+**d) Relación entre las vacunas y las muertes a partir de 2021:** Varios estudios han encontrado que las vacunas COVID-19 son efectivas para prevenir la enfermedad grave y la muerte. Sin embargo, la relación exacta entre las vacunas y las muertes puede variar dependiendo de una serie de factores, incluyendo las tasas de vacunación, la presencia de variantes del virus, y las políticas de salud pública. Ver @fig-barras-muertes
+
+```{python}
+#| label: fig-barras-muertes
+#| fig-cap: "Gráfico de barras con el promedio de muertes antes y despues de vacunación"
+
+
+# Existe una relación entre la vacunación y la disminución de las muertes por COVID-19 en estos países?
+# La vacunación en estos países comenzó el 1 de enero de 2021
+# Calcular el promedio de muertes antes y después de la vacunación
+# Antes de la vacunación
+deaths_before = top3_deaths.loc[:'2020-12-31'].mean()
+# Después de la vacunación
+deaths_after = top3_deaths.loc['2021-01-01':].mean()
+# Juntar los datos en un DataFrame
+df_deaths = pd.concat([deaths_before, deaths_after], axis=1)
+df_deaths.columns = ['Antes', 'Después']
+df_deaths.index.name = 'Country'
+
+
+# Crear un DataFrame largo para el gráfico
+df_long = df_deaths.reset_index().melt(id_vars='Country', var_name='Period', value_name='Deaths')
+
+# Crear el gráfico de barras
+fig = px.bar(df_long, x='Country', y='Deaths', color='Period', barmode='group',
+             labels={'Deaths':'Muertes', 'Country':'País'},
+             title='Promedio de muertes antes y después de la vacunación')
+# Poner el fondo blanco
+fig.update_layout(plot_bgcolor='white')
+
+fig.show()
+
+```
+
+Como podemos observar se ve que la vacuna tiene un efecto negativo en las muertes, pero se debe a que el análisis es muy básico.
+Para analizar realmente la significancia de vacuna debemos analizar esto en un paradigma estadístico.
+
+Vamos a usar la clásica regresión lineal con objetivo de analizar la significancia de una variable dummy que marca la presencia de la vacuna.
+
+Vamos a hacer un test de significancia para saber si esa variable creada es o no significante en disminuir las muertes con un alpah de 0.05 de significancia.
+```{python}
+
+#| 
+# Hacer una regresión lineal con una variable independiente que sea el tiempo y la variable dependiente las muertes, a eso agregale un dummy que sea 1 si es después de la vacunación y 0 si es antes de la vacunación
+# para saber la significancia de la vacunación en la disminución de las muertes
+
+
+X = np.arange(len(top3_deaths)).reshape(-1, 1)
+y = top3_deaths.values
+# Crear el dummy
+largo_dummy = len(top3_deaths)
+dummy = np.zeros(largo_dummy)
+# la primera observación es de 2020-01-22
+# la vacunación en estos países comenzó el 1 de enero de 2021
+# por lo tanto, la observación 345 es el 2021-01-01
+dummy[345:] = 1
+# Agregar el dummy a X
+X = np.hstack((X, dummy.reshape(-1, 1)))
+
+# Escalar los datos
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+y = scaler.fit_transform(y)
+
+# Crear el modelo
+model = LinearRegression()
+model.fit(X, y)
+# Poner nombre a los coef
+coef = model.coef_[0]
+coef_names = ['Tiempo', 'Dummy']
+# Mostrar los coeficientes
+dict(zip(coef_names, coef))
+# Hacer test de significancia
+from scipy.stats import f
+# Calcular el estadístico F
+F = (model.score(X, y) / (1 - model.score(X, y))) * (largo_dummy - 2)
+# Calcular el p-valor
+p_value = 1 - f.cdf(F, 1, largo_dummy - 2)
+# Mostrar el p-valor
+p_value
+# Resultado = 1.1102230246251565e-16
+print(f'El p-valor es {p_value}, lo que es mucho menor que 0.05, por lo tanto, la vacunación es muy significativa en la disminución de las muertes por COVID-19 en estos países agregando esta variable temporal.')
+
+
+
+
+
+
+
+
+```
+
+
+# Discusión
+
+Uno de los resultados más desconcertantes fue observar que después de la introducción de las vacunas COVID-19 el 1 de enero de 2021, el promedio de muertes por COVID-19 no disminuyó en los tres países con el mayor número de casos en 2020: Estados Unidos, India y Brasil. Este hallazgo es coherente ya que se sacaron simple promedios y eso no es representativo de la evolución en el tiempo de las muertes por COVID-19.
+
+Por lo tanto, se realizó un análisis más detallado utilizando una regresión lineal para examinar la significancia de una variable dummy que marca la presencia de la vacuna.
+
+Los resultados del test de significancia mostraron que el p-valor es mucho menor que 0.05, lo que indica que la vacunación es muy significativa en la disminución de las muertes por COVID-19 en estos países. Este hallazgo sugiere que las vacunas COVID-19 han tenido un impacto positivo en la reducción de las muertes por COVID-19 que no es nada nuevo, pero lo comprobamos a partir de una base de datos real.
+
+# Conclusiones
+
+## Impacto de COVID-19 y Propagación:
+
+La pandemia ha tenido un impacto significativo en todo el mundo, afectando a casi todos los países desde que se informó por primera vez.
+Se observó una distribución global de casos de COVID-19 a lo largo del tiempo, mostrando cómo ha evolucionado la pandemia en diferentes regiones.
+
+## Análisis de Muertes y Vacunas:
+
+Se analizó la evolución de las muertes en los tres países con el mayor número de casos en 2020: Estados Unidos, India y Brasil.
+Aunque inicialmente se observó un aumento en el número de muertes, se profundizó el análisis utilizando regresión lineal para evaluar la significancia de la vacunación en la reducción de las muertes.
+El análisis estadístico mostró que la vacunación es significativa en la disminución de las muertes por COVID-19 en estos países, lo que sugiere un impacto positivo de las vacunas en la mitigación de la pandemia.
+## Recomendaciones y Significado:
+
+Los hallazgos del informe sugieren la importancia de las vacunas en la lucha contra la pandemia, destacando su efectividad en la reducción de muertes.
+Estos resultados pueden ser útiles para los responsables de la toma de decisiones y los profesionales de la salud pública en la implementación de estrategias para combatir la propagación de COVID-19 y sus efectos adversos.
+
+# Referencias
+
+Datos: 
+Johns Hopkins, Center for system Science and engineering. https://github.com/CSSEGISandData
+
+Salinas, M., & Silva, C. (2007). Modelos de regresión y correlación II: Regresión lineal múltiple. Cienc. Trab, 39-41.
+
+Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... & Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. the Journal of machine Learning research, 12, 2825-2830.
+
+Plotly Technologies Inc. Title: Collaborative data science Publisher: Plotly Technologies Inc. Place of publication: Montréal, QC Date of publication: 2015 URL: https://plot.ly

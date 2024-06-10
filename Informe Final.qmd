@@ -1,0 +1,545 @@
+---
+title: "Exploración de datos del COVID-19"
+format:
+  html:
+    code-fold: true
+    number-sections: true
+    toc: true
+author:
+  - name: Israel Huentecura
+    email: Israel.Huentecura@mayor.cl
+jupyter: python3
+---
+
+# Análisis de IPC y Redes Sociales Económicas: Un Estudio de Correlación y Evolución
+
+# Resumen
+Este estudio analiza la dinámica de las relaciones entre el Índice de Precios al Consumidor (IPC) y otras variables económicas a lo largo del tiempo, mediante técnicas de análisis de correlación y redes complejas. Se utilizó un dataset que abarca desde 2005, centrándose en el IPC como variable respuesta. Los resultados muestran patrones de correlación, cambios en la estructura de redes anuales y evolución en medidas de centralidad, destacando la importancia de monitorear y adaptar estrategias económicas en función de estas dinámicas.
+
+# Introducción
+El Índice de Precios al Consumidor (IPC) es un indicador clave en la economía que mide la variación de precios de un conjunto de bienes y servicios representativos. Su relación con otras variables económicas es fundamental para comprender la salud general de una economía. En este estudio, se analiza cómo estas relaciones evolucionan a lo largo del tiempo, utilizando técnicas de análisis de redes complejas para identificar patrones y tendencias.
+
+# Dataset y Metodología
+Se utilizó el un dataset de elaboración propia, estos datos corresponde a todas las series mensuales que reporta el Banco Central a traves de su API, se usaron los datos desde 2005 y enfocándose en el IPC como variable respuesta. Se aplicaron técnicas de análisis de correlación para identificar variables significativamente relacionadas con el IPC, tanto con retrasos específicos como sin ellos. Además, se construyeron redes anuales basadas en matrices de adyacencia con un umbral de correlación del 0.9 para visualizar la estructura de redes económicas.
+
+## ¿Como se crean los enlaces en los grafos?
+El umbral de correlación de 0.9 se refiere a un valor específico que se utiliza como criterio para determinar la fuerza de la relación entre dos variables. En este contexto, se utiliza para establecer la conexión entre nodos en una red económica.
+
+Cuando se calcula la correlación entre dos variables, el resultado puede variar entre -1 y 1. Un valor de 1 indica una correlación positiva perfecta, lo que significa que las variables están completamente relacionadas de manera positiva. Por otro lado, un valor de -1 indica una correlación negativa perfecta, lo que significa que las variables están completamente relacionadas de manera negativa. Un valor de 0 indica que no hay correlación entre las variables.
+
+En este caso, se establece un umbral de correlación de 0.9, lo que significa que solo se considerarán las conexiones entre nodos si la correlación entre las variables es igual o mayor a 0.9 en valor absoluto. Esto implica que solo se crearán enlaces entre nodos si la relación entre las variables es muy fuerte.
+
+Establecer un umbral de correlación ayuda a filtrar las conexiones más débiles y resaltar las relaciones más fuertes en la red económica, lo que puede facilitar la visualización y comprensión de la estructura de la red.
+
+## Objeto Dataframe_modelos
+
+El objeto `Dataframe_modelos` es una clase en Python que se utiliza para realizar análisis de regresión en un DataFrame de datos. Esta clase tiene varios métodos que permiten obtener información sobre las correlaciones entre variables y realizar transformaciones en los datos.
+
+El método `__init__` es el constructor de la clase y se encarga de inicializar los atributos del objeto. Recibe como argumentos la ruta del archivo CSV que contiene los datos, el nombre de la variable objetivo, el nombre de la columna de fecha y la fecha de corte para el análisis. En este método, se lee el archivo CSV y se realiza una limpieza de los datos utilizando la función `limpiar_df_regresion`.
+
+El método [`get_clean_dataframe`]
+devuelve el DataFrame limpio, es decir, sin valores nulos ni filas duplicadas.
+
+El método [`get_best_correration`] devuelve una Serie de pandas que contiene las correlaciones entre las variables del DataFrame limpio y la variable objetivo. Estas correlaciones se ordenan de mayor a menor.
+
+El método [`get_best_correration_with_lag`] devuelve una Serie de pandas que contiene las correlaciones entre las variables del DataFrame limpio y la variable objetivo, pero con un desplazamiento (lag) especificado. El desplazamiento se aplica a las series de tiempo, lo que permite analizar la correlación entre variables en diferentes momentos.
+
+El método [`get_best_correlations_for_each_variable`] devuelve un DataFrame de pandas que contiene las mejores correlaciones para cada variable del DataFrame limpio, considerando un umbral de correlación y un desplazamiento (lag) especificados.
+
+El método [`get_best_correlations_for_each_variable_with_lag_list`] devuelve un DataFrame de pandas que contiene las mejores correlaciones para cada variable del DataFrame limpio, considerando una lista de desplazamientos (lags) y un umbral de correlación. Este método realiza un bucle sobre la lista de desplazamientos y compara las correlaciones obtenidas en cada desplazamiento para seleccionar las mejores.
+
+El método [`get_df_with_best_lag_incorporated`] devuelve un DataFrame de pandas que contiene las variables del DataFrame limpio con las mejores correlaciones y desplazamientos (lags) incorporados. Esto significa que se aplican los desplazamientos correspondientes a cada variable según las mejores correlaciones obtenidas.
+
+```{python}
+import pandas as pd
+import numpy as np
+
+def limpiar_df_regresion(df: pd.DataFrame, date_column_name: str, date_cut: str) -> pd.DataFrame:
+    """
+    Limpia el dataframe para el análisis de regresión.
+    """
+    df[date_column_name] = pd.to_datetime(df[date_column_name])
+    df = df[df[date_column_name] > date_cut]
+    # Poner como index la fecha
+    df = df.set_index(date_column_name)
+    # Tomar solo las columnas que no tengan NaN
+    df = df.dropna(axis=1)
+    # Drop duplicates by index
+    df = df[~df.index.duplicated(keep='first')]
+    return df
+
+class Dataframe_modelos:
+    def __init__(self, df_path, variable_respuesta: str,  date_column_name:str, date_cut:str):
+        """
+        Inicializa el modelo de regresión.
+        
+        Args:
+            df: DataFrame con los datos.
+            variable_respuesta: Nombre de la variable objetivo.
+            date_column_name: Nombre de la columna de fecha.
+            date_cut: Fecha de corte para el análisis.
+        """
+        self.df = pd.read_csv(df_path)
+        self.variable_respuesta= variable_respuesta
+        self.date_column_name = date_column_name
+        self.date_cut = date_cut
+        self.df_clean = limpiar_df_regresion(self.df, self.date_column_name, self.date_cut)
+    def get_clean_dataframe(self):
+        return self.df_clean
+    def get_best_correration(self)-> pd.Series:
+        """
+        Get the best correlation with the variable respuesta.
+
+        Returns:
+            _ : Correlation with the variable respuesta.
+        """
+        return self.df_clean.corr()[self.variable_respuesta].sort_values(ascending=False)
+    def get_best_correration_with_lag(self, lag:int)-> pd.Series:
+        """
+        Get the best correlation with the variable respuesta with a lag.
+
+        Args:
+            lag (int): Lag to shift the correlation.
+
+        Returns:
+            pd.Series: Correlation with the variable respuesta.
+        """
+        return self.df_clean.corr()[self.variable_respuesta].sort_values(ascending=False).shift(lag)
+    def get_best_correlations_for_each_variable(self,threshold:float,lag:int)-> pd.DataFrame:
+        """
+        Get the best correlation with the variable respuesta with a lag.
+
+        Args:
+            threshold (float): Threshold to filter the correlation.
+            lag (int): Lag to shift the correlation.
+
+        Returns:
+            pd.DataFrame: Correlation with the variable respuesta.
+        """
+        df_corr = self.df_clean.corr()[self.variable_respuesta].sort_values(ascending=False).shift(lag)
+        return df_corr[df_corr>threshold]
+    def get_best_correlations_for_each_variable_with_lag_list(self, threshold:float, lag_list: list) -> pd.DataFrame:
+        """
+        Get the best correlation with the variable respuesta with all lags in lag_list.
+
+        Args:
+            threshold (float): Threshold to filter the correlation.
+            lag_list (list): List of lags to shift the correlation.
+
+        Returns:
+            pd.DataFrame: best correlation with the variable respuesta for each lag and each variable.
+        """
+        df_corr = self.df_clean.corr()[self.variable_respuesta].sort_values(ascending=False)
+        df_corr = df_corr[df_corr>threshold]
+        df_corr = df_corr.to_frame()
+        df_corr.columns = ['correlation']
+        df_corr['lag'] = 0  # Initialize lag column with 0
+
+        for lag in lag_list:
+            df_temp = self.df_clean.corr()[self.variable_respuesta].sort_values(ascending=False).shift(lag)
+            df_temp = df_temp[df_temp>threshold].to_frame()
+            df_temp.columns = ['correlation']
+            df_temp['lag'] = lag
+
+            # Reindex df_temp to match the index of df_corr
+            df_temp = df_temp.reindex(df_corr.index)
+
+            # Update the rows in df_corr where the correlation in df_temp is greater
+            mask = df_temp['correlation'] > df_corr['correlation']
+            df_corr.loc[mask, 'correlation'] = df_temp.loc[mask, 'correlation']
+            df_corr.loc[mask, 'lag'] = df_temp.loc[mask, 'lag']
+        # Ordenar por correlación
+        return df_corr.sort_values(by='correlation', ascending=False)
+    
+    def get_df_with_best_lag_incorporated(self,threshold:float,lag_list: list)-> pd.DataFrame:
+        """
+        Make a dataframe with the best correlation for each variable and lag in lag_list.
+        Returns:
+            pd.DataFrame: Dataframe with the best correlation for each variable and lag in lag_list.
+        """
+        df_corr = self.get_best_correlations_for_each_variable_with_lag_list(threshold,lag_list)
+        df = self.df_clean[df_corr.index]
+        for index, row in df_corr.iterrows():
+            df[index] = df[index].shift(row['lag'])
+        return df.dropna()
+```
+
+## Funciones para graficar
+
+La función get_adjacency_matrix crea una matriz de adyacencia a partir de una matriz de correlación, evaluando un umbral para determinar si se establece una conexión entre nodos. Devuelve la matriz de adyacencia resultante.
+
+La función [`get_degree_distribution`] calcula la distribución de grados de un grafo representado por una matriz de adyacencia. Devuelve un arreglo con los grados de los nodos.
+
+La función [`plot_degree_distribution`] grafica la distribución de grados de un grafo. Muestra un histograma que representa la probabilidad de cada grado.
+
+La función [`plot_Network`] grafica un grafo utilizando la biblioteca networkx y matplotlib. Muestra los nodos y las conexiones entre ellos, resaltando la componente conexa más grande. También permite agregar nombres a los nodos y etiquetas a las conexiones
+
+```{python}
+import networkx as nx
+import matplotlib.pyplot as plt
+import numpy as np
+
+def get_adjacency_matrix(matrix_correlation:np.ndarray, threshold:float)->np.ndarray:
+    """
+    Crea una matriz de adyacencia que evalua un umbral si es que se hace la conexión entre nodos.
+
+    Parámetros:
+    
+    
+    Return:
+    - numpy.ndarray: Matriz de adyacencia que representa al grafo aleatorio.
+    """
+    condition_matrix = np.abs(matrix_correlation) > threshold
+    np.fill_diagonal(condition_matrix, 0)
+    adjacency_matrix = np.where(condition_matrix, 1, 0)
+    return adjacency_matrix
+
+
+
+def get_degree_distribution(adjacency_matrix):
+    degree_distribution = np.sum(adjacency_matrix, axis=0)
+    return degree_distribution
+
+def plot_degree_distribution(degree_distribution):
+
+    plt.hist(degree_distribution, bins=np.arange(degree_distribution.min(), degree_distribution.max() + 1), density=True)
+    plt.title('Node Degree Distribution')
+    plt.xlabel('Degree')
+    plt.ylabel('Probability')
+    plt.show()
+    
+def plot_Network(G, column_names):
+    fig = plt.figure("Degree of a random graph", figsize=(40, 40))
+    # Create a gridspec for adding subplots of different sizes with his names
+    axgrid = fig.add_gridspec(5, 4)
+
+    ax0 = fig.add_subplot(axgrid[0:3, :])
+    Gcc = G.subgraph(sorted(nx.connected_components(G), key=len, reverse=True)[0])
+    
+    pos = nx.spring_layout(Gcc, seed=10396953)
+    nx.draw_networkx_nodes(Gcc, pos, ax=ax0, node_size=20)
+    nx.draw_networkx_edges(Gcc, pos, ax=ax0, alpha=0.4)
+    ax0.set_title("Random Network")
+    ax0.set_axis_off()
+    # add names to the nodes
+    for i in Gcc.nodes():
+        Gcc.nodes[i]['name'] = column_names[i]
+    # add the names to the nodes
+    node_names = nx.get_node_attributes(Gcc, 'name')
+    nx.draw_networkx_labels(Gcc, pos, labels=node_names, ax=ax0)
+    plt.show()
+
+```
+
+## Ejecución y lógica de creación de grafos evolutivos
+
+El código crea y visualiza grafos evolutivos basados en datos históricos. Aquí está el resumen del flujo general del código:
+
+### Importación de bibliotecas: 
+
+Se importan numpy, networkx, plotly.graph_objects y plotly.express para manipulación y visualización de datos, y creación de grafos.
+
+### Definición de variables:
+
+ Se establecen la ruta del archivo de datos (df_path), la variable de respuesta (variable_response), la columna de fecha (date_column_name) y la fecha de corte (corte_fecha).
+
+### Instancia de clase y manipulación de datos:
+
+Se crea una instancia de Dataframe_modelos y se obtiene un DataFrame (df_lag) que incorpora el mejor retraso basado en un umbral y una lista de retrasos.
+
+### Preparación de datos:
+
+Se resetea el índice de df_lag, se obtiene una lista de años únicos y se inicializan listas para almacenar DataFrames por año, matrices de adyacencia, nombres de variables y grafos.
+
+### Iteración por años:
+
+Para cada año (excepto el último), se filtran los datos por año y se calculan las matrices de correlación y de adyacencia.
+
+### Creación de grafos:
+
+#### Se crea un grafo a partir de la matriz de adyacencia.
+#### Se calcula la disposición de los nodos con spring_layout.
+#### Se almacenan las coordenadas de bordes y nodos.
+#### Se crean objetos go.Scatter para representar bordes y nodos.
+
+### Configuración de nodos y bordes:
+
+Se agregan las coordenadas y las conexiones de los nodos.
+Se actualizan las propiedades de color y texto de los nodos basadas en las conexiones.
+Visualización del gráfico:
+
+### Se crea un objeto go.Figure que contiene los objetos edge_trace y node_trace.
+#### Se configuran las propiedades de diseño del gráfico.
+#### Se muestra el gráfico con el método show().
+#### Este proceso permite visualizar la evolución de las relaciones entre variables a lo largo del tiempo mediante grafos interactivos.
+
+```{python}
+import numpy as np
+import networkx as nx
+import plotly.graph_objects as go
+import plotly.express as px
+
+df_path = './df_all_series_mensuales_2024.csv'
+variable_response = 'IPC General histórico, variación mensual'
+date_column_name = 'indexDateString'
+corte_fecha = '2005-01-01'
+df_modelos = Dataframe_modelos(df_path, variable_response, date_column_name, corte_fecha)
+df_lag = df_modelos.get_df_with_best_lag_incorporated(threshold=0.3, lag_list=[-1, -3, -6])
+df_lag = df_lag.reset_index()
+year_list = df_lag['indexDateString'].dt.year.unique()
+
+# Hacer un dataframe por año
+df_year_list = []
+list_of_matrix = []
+names_list_per_year = []
+list_of_G = []
+
+for year in year_list[:-1]:
+    df_year = df_lag[df_lag['indexDateString'].dt.year == year]
+    df_year_list.append(df_year)
+
+    df_corr_lag = df_year.corr()
+    names_list = df_corr_lag.columns
+    adjacency_matrix = get_adjacency_matrix(df_corr_lag.values, threshold=0.9)
+    list_of_matrix.append({'year': year, 'matrix': adjacency_matrix, 'names': names_list})
+
+    G = nx.from_numpy_array(adjacency_matrix)
+    list_of_G.append(G)
+    
+    # Convertir a Plotly
+    pos = nx.spring_layout(G)
+    edge_x = []
+    edge_y = []
+
+    for edge in G.edges():
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_x.append(x0)
+        edge_x.append(x1)
+        edge_x.append(None)
+        edge_y.append(y0)
+        edge_y.append(y1)
+        edge_y.append(None)
+
+    edge_trace = go.Scatter(
+        x=edge_x, y=edge_y,
+        line=dict(width=0.5, color='#888'),
+        hoverinfo='none',
+        mode='lines')
+
+    node_x = []
+    node_y = []
+    for node in G.nodes():
+        x, y = pos[node]
+        node_x.append(x)
+        node_y.append(y)
+
+    node_trace = go.Scatter(
+        x=node_x, y=node_y,
+        mode='markers',
+        hoverinfo='text',
+        marker=dict(
+            showscale=True,
+            colorscale='YlGnBu',
+            size=10,
+            colorbar=dict(
+                thickness=15,
+                title='Node Connections',
+                xanchor='left',
+                titleside='right'
+            ),
+        )
+    )
+
+    node_adjacencies = []
+    node_text = []
+    for node, adjacencies in enumerate(G.adjacency()):
+        node_adjacencies.append(len(adjacencies[1]))
+        node_text.append(f'{names_list[node]} # of connections: {len(adjacencies[1])}')
+    
+    node_trace.marker.color = node_adjacencies
+    node_trace.text = node_text
+
+    fig = go.Figure(data=[edge_trace, node_trace],
+             layout=go.Layout(
+                title=f'Grafo de correlaciones año {year}',
+                titlefont_size=16,
+                showlegend=False,
+                hovermode='closest',
+                margin=dict(b=20, l=5, r=5, t=40),
+                xaxis=dict(showgrid=False, zeroline=False),
+                yaxis=dict(showgrid=False, zeroline=False))
+                )
+    # Aplicar buenas prácticas de visualización
+    fig.update_layout(
+        xaxis=dict(showgrid=False, zeroline=False),
+        yaxis=dict(showgrid=False, zeroline=False)
+    )
+    fig.update_xaxes(mirror=True, showticklabels=False)
+    fig.update_yaxes(mirror=True, showticklabels=False)
+    
+    fig.show()
+```
+
+# Grafos evolutivos
+
+El código proporcionado genera gráficos utilizando la biblioteca plotly.express en Python. Estos gráficos representan la evolución de diferentes medidas de centralidad en una serie de grafos a lo largo del tiempo.
+
+El primer gráfico muestra la evolución del coeficiente de agrupamiento promedio en los grafos. El coeficiente de agrupamiento es una medida que indica qué tan conectados están los vecinos de un nodo en un grafo. Este gráfico nos permite visualizar cómo cambia la estructura de agrupamiento en los grafos a medida que pasa el tiempo.
+
+
+
+```{python}
+clustering_coefficients = [nx.average_clustering(G) for G in list_of_G]
+
+fig = px.line(
+    x=year_list[:-1],
+    y=clustering_coefficients,
+    labels={'x': 'Año', 'y': 'Clustering Coefficient'},
+    title='Evolución del Clustering Coefficient'
+)
+# Quitar grid y fondo
+fig.update_layout(
+    xaxis=dict(showgrid=False, zeroline=False),
+    yaxis=dict(zeroline=False)
+) 
+fig.show()
+```
+
+El segundo gráfico muestra la evolución del promedio de la centralidad de grado en los grafos. La centralidad de grado es una medida que indica la importancia de un nodo en función de la cantidad de conexiones que tiene. Este gráfico nos permite observar cómo varía la importancia de los nodos en los grafos a lo largo del tiempo.
+
+
+```{python}
+degree_centralities = [nx.degree_centrality(G) for G in list_of_G]
+
+# Calcular el promedio de degree centrality por año
+average_degree_centralities = [np.mean(list(dc.values())) for dc in degree_centralities]
+
+fig = px.line(
+    x=year_list[:-1],
+    y=average_degree_centralities,
+    labels={'x': 'Año', 'y': 'Promedio de Degree Centrality'},
+    title='Evolución del promedio de Degree Centrality'
+)
+# Quitar grid y fondo
+fig.update_layout(
+    xaxis=dict(showgrid=False, zeroline=False),
+    yaxis=dict(zeroline=False)
+) 
+fig.show()
+```
+
+El tercer gráfico muestra la evolución del promedio de la centralidad de cercanía en los grafos. La centralidad de cercanía es una medida que indica qué tan cerca está un nodo de todos los demás nodos en un grafo. Este gráfico nos permite analizar cómo cambia la accesibilidad de los nodos en los grafos a medida que transcurre el tiempo.
+
+```{python}
+closeness_centralities = [nx.closeness_centrality(G) for G in list_of_G]
+
+# Calcular el promedio de closeness centrality por año
+average_closeness_centralities = [np.mean(list(cc.values())) for cc in closeness_centralities]
+
+fig = px.line(
+    x=year_list[:-1],
+    y=average_closeness_centralities,
+    labels={'x': 'Año', 'y': 'Promedio de Closeness Centrality'},
+    title='Evolución del promedio de Closeness Centrality'
+)
+# Quitar grid y fondo
+fig.update_layout(
+    xaxis=dict(showgrid=False, zeroline=False),
+    yaxis=dict(zeroline=False)
+) 
+fig.show()
+
+```
+
+El cuarto gráfico muestra la evolución del promedio de la centralidad de intermediación en los grafos. La centralidad de intermediación es una medida que indica qué tan importante es un nodo en el flujo de información a través de un grafo. Este gráfico nos permite observar cómo varía la importancia de los nodos en el flujo de información a lo largo del tiempo.
+
+
+```{python}
+betweenness_centralities = [nx.betweenness_centrality(G) for G in list_of_G]
+
+# Calcular el promedio de betweenness centrality por año
+average_betweenness_centralities = [np.mean(list(bc.values())) for bc in betweenness_centralities]
+
+fig = px.line(
+    x=year_list[:-1],
+    y=average_betweenness_centralities,
+    labels={'x': 'Año', 'y': 'Promedio de Betweenness Centrality'},
+    title='Evolución del promedio de Betweenness Centrality'
+)
+# Quitar grid y fondo
+fig.update_layout(
+    xaxis=dict(showgrid=False, zeroline=False),
+    yaxis=dict(zeroline=False)
+) 
+fig.show()
+
+```
+
+El quinto gráfico muestra la evolución del promedio de la centralidad de autovector en los grafos. La centralidad de autovector es una medida que indica la importancia de un nodo en función de la importancia de sus vecinos. Este gráfico nos permite analizar cómo cambia la importancia de los nodos en función de la importancia de sus vecinos a lo largo del tiempo.
+
+```{python}
+
+eigenvector_centralities = [nx.eigenvector_centrality(G, max_iter=1000) for G in list_of_G]
+
+# Calcular el promedio de eigenvector centrality por año
+average_eigenvector_centralities = [np.mean(list(ec.values())) for ec in eigenvector_centralities]
+
+fig = px.line(
+    x=year_list[:-1],
+    y=average_eigenvector_centralities,
+    labels={'x': 'Año', 'y': 'Promedio de Eigenvector Centrality'},
+    title='Evolución del promedio de Eigenvector Centrality'
+)
+# Quitar grid y fondo
+fig.update_layout(
+    xaxis=dict(showgrid=False, zeroline=False),
+    yaxis=dict(zeroline=False)
+) 
+
+fig.show()
+```
+
+
+# Resultados Clave
+
+## Evolución de las Relaciones Económicas: 
+
+Se observa un patrón distintivo donde la cohesión de la red económica aumenta durante tiempos de crisis, reflejado en un aumento del coeficiente de agrupamiento y promedio de centralidad de grado. Esto sugiere una mayor interconexión y dependencia mutua entre sectores económicos en momentos de incertidumbre.
+
+## Impacto de Crisis en métricas:
+
+Durante las crisis de 2008 y 2020, se registran picos en medidas como la centralidad de cercanía y grados, indicando que ciertos nodos (variables económicas) cobran mayor importancia en la transmisión de choques económicos.
+
+## Evolución de la Estructura de Red:
+
+El análisis de redes muestra una adaptación en la estructura de las relaciones económicas, con cambios significativos en la forma en que las variables interactúan. Esto es crucial para entender cómo los flujos de información y recursos se ven afectados durante tiempos de tensión económica.
+
+# Conclusiones
+
+El análisis de redes económicas a lo largo del tiempo, especialmente durante episodios de crisis, revela la dinámica subyacente de la economía global. La mayor centralidad y agrupación observadas durante periodos como 2008 y 2020 sugiere un sistema económico más sensible a las perturbaciones y una mayor necesidad de cohesión para mantener la estabilidad. Esto implica que las políticas económicas deben ser diseñadas considerando la interconectividad entre sectores y la posibilidad de retroalimentaciones negativas.
+
+# Recomendaciones
+
+## Monitoreo Continuo: 
+Es esencial implementar sistemas de monitoreo constante de estas redes económicas para anticipar cambios y crísis potenciales en el sistema.
+
+## Estrategias de Resiliencia: 
+La identificación de nodos críticos con alta centralidad durante crisis sugiere la necesidad de desarrollar estrategias que fortalezcan la resiliencia de estos sectores clave.
+
+## Modelos de Previsión: 
+La integración de modelos de redes complejas podría mejorar nuestra capacidad para predecir cambios en la centralidad de variables y, por lo tanto, prevenir o minimizar los impactos negativos de futuras crisis.
+
+# Futuras Investigaciones
+
+## Análisis Detallado de Nodos Críticos: 
+
+Profundizar en el estudio de los nodos con alta centralidad durante crisis para comprender mejor sus roles específicos en la propagación de choques económicos.
+
+## Comparación Internacional: 
+
+Ampliar el análisis a nivel internacional para identificar patrones globales y diferencias regionales en la respuesta de las redes económicas a las crisis.
+
+## Incorporación de Factores Externos: 
+
+Estudiar cómo factores externos, como políticas monetarias o eventos geopolíticos, influyen en la estructura y dinámica de estas redes económicas.
